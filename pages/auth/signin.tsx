@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm, useToggle, upperFirst } from '@mantine/hooks';
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import {
   Text,
   Divider,
@@ -18,6 +18,32 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 export default function SignIn({ props }) {
+  const router = useRouter()
+  const { data: session, status } = useSession()
+  const [windowSize, setWindowSize] = useState({
+    width: undefined,
+    height: undefined,
+  });
+  
+  if (status === "authenticated") {
+    router.push("/")
+    setTimeout(() => {
+      showNotification({
+        autoClose: 10000,
+        color: 'orange',
+        title: 'Already signed in',
+        message: 'Sign out first to switch accounts',
+      })
+    }, 500)
+  }
+
+  function handleResize() {
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  }
+
   useEffect(() => {
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
@@ -31,13 +57,18 @@ export default function SignIn({ props }) {
             title: 'Email linked to another provider',
             message: 'Your email address is linked to another OAuth provider. Please sign in using that provider.',
           })
-        }, 1000)
+        }, 500)
       }
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener("resize", handleResize);
+      handleResize();
+      return () => window.removeEventListener("resize", handleResize);
     }
   }, []);
   return (
     <>
-      <Center style={{ height: "95vh" }}>
+      <Center style={{ height: windowSize.height - 100 }}>
         <Paper shadow="sm" p="xl" pb="lg" withBorder>
           <Stack>
             <Title order={2}>Welcome to Quote Overflow</Title>

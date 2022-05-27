@@ -3,6 +3,7 @@ import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
+import { useSession, signIn, signOut } from "next-auth/react"
 
 const prisma = new PrismaClient()
 
@@ -26,7 +27,7 @@ export default NextAuth({
   },
   callbacks: {
     async redirect({ url, baseUrl }) {
-      return baseUrl + '?options=SignedIn'
+      return baseUrl + '?options=auth'
     }
   },
 })

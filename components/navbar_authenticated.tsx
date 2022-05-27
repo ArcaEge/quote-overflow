@@ -23,6 +23,7 @@ import {
     SwitchHorizontal,
     ChevronDown,
 } from 'tabler-icons-react';
+import { useSession, signIn, signOut } from "next-auth/react"
 
 const useStyles = createStyles((theme) => ({
     header: {
@@ -38,9 +39,9 @@ const useStyles = createStyles((theme) => ({
     },
 
     userMenu: {
-        [theme.fn.smallerThan('xs')]: {
-            display: 'none',
-        },
+        // [theme.fn.smallerThan('xs')]: {
+        //     display: 'none',
+        // },
     },
 
     user: {
@@ -55,9 +56,9 @@ const useStyles = createStyles((theme) => ({
     },
 
     burger: {
-        [theme.fn.largerThan('xs')]: {
-            display: 'none',
-        },
+        // [theme.fn.largerThan('xs')]: {
+        //     display: 'none',
+        // },
     },
 
     userActive: {
@@ -65,9 +66,9 @@ const useStyles = createStyles((theme) => ({
     },
 
     tabs: {
-        [theme.fn.smallerThan('sm')]: {
-            display: 'none',
-        },
+        // [theme.fn.smallerThan('sm')]: {
+        //     display: 'none',
+        // },
     },
 
     tabsList: {
@@ -89,7 +90,7 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-export default function HeaderTabs({ user, tabs, activeTab }) {
+export default function AuthenticatedHeader({ user, tabs, activeTab }) {
     const { classes, theme, cx } = useStyles();
     const [opened, toggleOpened] = useBooleanToggle(false);
     const [userMenuOpened, setUserMenuOpened] = useState(false);
@@ -100,13 +101,14 @@ export default function HeaderTabs({ user, tabs, activeTab }) {
         <div className={classes.header}>
             <Container className={classes.mainSection}>
                 <Group position="apart">
+                    <div></div>
 
-                    <Burger
+                    {/* <Burger
                         opened={opened}
                         onClick={() => toggleOpened()}
                         className={classes.burger}
                         size="sm"
-                    />
+                    /> */}
 
                     <Menu
                         size={260}
@@ -127,30 +129,9 @@ export default function HeaderTabs({ user, tabs, activeTab }) {
                                     <ChevronDown size={12} />
                                 </Group>
                             </UnstyledButton>
-                        }
-                    >
-                        <Menu.Item icon={<Heart size={14} color={theme.colors.red[6]} />}>
-                            Liked posts
-                        </Menu.Item>
-                        <Menu.Item icon={<Star size={14} color={theme.colors.yellow[6]} />}>
-                            Saved posts
-                        </Menu.Item>
-                        <Menu.Item icon={<Message size={14} color={theme.colors.blue[6]} />}>
-                            Your comments
-                        </Menu.Item>
-
-                        <Menu.Label>Settings</Menu.Label>
-                        <Menu.Item icon={<Settings size={14} />}>Account settings</Menu.Item>
-                        <Menu.Item icon={<SwitchHorizontal size={14} />}>Change account</Menu.Item>
-                        <Menu.Item icon={<Logout size={14} />}>Logout</Menu.Item>
-
-                        <Divider />
-
-                        <Menu.Label>Danger zone</Menu.Label>
-                        <Menu.Item icon={<PlayerPause size={14} />}>Pause subscription</Menu.Item>
-                        <Menu.Item color="red" icon={<Trash size={14} />}>
-                            Delete account
-                        </Menu.Item>
+                        }>
+                        <Menu.Label>{user.email}</Menu.Label>
+                        <Menu.Item icon={<Logout size={14} />} onClick={() => signOut()}>Logout</Menu.Item>
                     </Menu>
                 </Group>
             </Container>

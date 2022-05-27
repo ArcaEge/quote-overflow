@@ -4,18 +4,16 @@ import { showNotification } from '@mantine/notifications';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import HeaderTabs from 'components/navbar'
 
 export default function Index() {
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
     const router = useRouter()
+    const { query } = useRouter()
+    let options = query.options
     useEffect(() => {
-        let queryString = window.location.search;
-        let urlParams = new URLSearchParams(queryString);
-        let options = urlParams.has('options') ? urlParams.get('options') : null;
         if (options) {
-            if (options === 'SignedIn') {
-                router.push("/")
+            if (options === 'auth' && status === "authenticated") {
+                router.replace("/")
                 setTimeout(() => {
                     showNotification({
                         autoClose: 5000,
@@ -23,25 +21,30 @@ export default function Index() {
                         title: 'Signed In',
                         message: 'Signed in successfully',
                     })
-                }, 1000)
+                }, 500)
+            } else if (options === 'auth' && status != "authenticated" && status != "loading") {
+                router.replace("/")
+                setTimeout(() => {
+                    showNotification({
+                        autoClose: 5000,
+                        color: 'orange',
+                        title: 'Signed Out',
+                        message: 'Signed out successfully',
+                    })
+                }, 500)
             }
         }
-    }, []);
+    }, [status, options])
     if (session) {
         return (
             <>
-                <HeaderTabs user={session.user} tabs={["Home"]} activeTab="Home" /> {/* // eslint-disable-line */}
-                Signed in as {session.user.email} <br />
-                <button onClick={() => signOut()}>Sign out</button>
+                {/* <AuthenticatedHeader user={session.user} tabs={["Home"]} activeTab="Home" /> */}
             </>
         )
     }
     return (
         <>
-            Not signed in <br />
-            <Link href="/auth/signin" passHref>
-                <button>Sign in</button>
-            </Link>
+            {/* <UnauthenticatedHeader links={[{label: "Home", link: "/"}, {label: "Sign In", link: "/auth/signin"}]} /> */}
         </>
     )
 }
