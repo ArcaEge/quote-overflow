@@ -1,5 +1,6 @@
 import '../styles/globals.css'
 import { MantineProvider } from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
 import { SessionProvider } from "next-auth/react"
 
 function App({ Component, pageProps: { session, ...pageProps } }) {
@@ -12,7 +13,10 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
           fontFamily: '"Greycliff CF", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
           fontWeight: 700,
         }
-      }}><Component {...pageProps} />
+      }}>
+        <NotificationsProvider>
+          <Component {...pageProps} />
+        </NotificationsProvider>
       </MantineProvider>
     </SessionProvider>
   )
