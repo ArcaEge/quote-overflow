@@ -7,6 +7,7 @@ import { getRandomInt } from "functions/random"
 import { useModals } from '@mantine/modals';
 import { InfoCircle, ArrowUpRight, Star } from "tabler-icons-react"
 import { StarIcon, StarFillIcon } from "@primer/octicons-react"
+import NewDesignModal from "components/designs/new_design_modal"
 
 const useStyles = createStyles((theme) => ({
     headerWrap: {
@@ -42,7 +43,7 @@ export default function Page({ designs }) {
     const { classes, theme, cx } = useStyles();
     const [headerImage, setHeaderImage] = useState("");
     const router = useRouter()
-    const modals = useModals();
+    const modals = useModals()
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -65,14 +66,7 @@ export default function Page({ designs }) {
     const openNewDesignModal = () => {
         const id = modals.openModal({
             title: 'Name your new design',
-            children: (
-                <>
-                    <TextInput label={<>Design Name <Tooltip label="This can be changed later"><InfoCircle size={14} style={{ paddingBottom: 0 }} /></Tooltip></>} placeholder="Design Name" data-autofocus />
-                    <Button fullWidth variant="gradient" onClick={() => modals.closeModal(id)} mt="md">
-                        Create
-                    </Button>
-                </>
-            ),
+            children: <NewDesignModal onClose={() => modals.closeModal(id)} />,
         });
     };
 
