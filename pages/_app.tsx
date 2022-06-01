@@ -1,13 +1,14 @@
 import '../styles/globals.css'
 import { MantineProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
-import { SessionProvider } from "next-auth/react"
+import { ModalsProvider } from '@mantine/modals';
+import { SessionProvider, getSession } from "next-auth/react"
 import React, { useEffect } from 'react';
 import NextNProgress from "nextjs-progressbar";
 import NProgress from 'nprogress'
-import Navbar from 'components/navbar_handler';
+import MainHandler from 'components/main_handler';
 
-function App({ Component, pageProps: { session, ...pageProps } }) {
+function App({ Component, pageProps: { session, ...pageProps }, }) {
   NProgress.configure({ showSpinner: false })
 
   return (
@@ -21,13 +22,22 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
           fontWeight: 700,
         }
       }}>
-        <NotificationsProvider>
-          <Navbar />
-          <Component {...pageProps} />
-        </NotificationsProvider>
+        <ModalsProvider>
+          <NotificationsProvider>
+            <MainHandler Component={Component} pageProps={pageProps} />
+          </NotificationsProvider>
+        </ModalsProvider>
       </MantineProvider>
     </SessionProvider>
   )
 }
+
+// export async function getServerSideProps(context) {
+//   return {
+//     props: {
+//       session: await getSession(context),
+//     },
+//   }
+// }
 
 export default App

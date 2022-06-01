@@ -1,5 +1,5 @@
 // Next.js hello world example
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, getSession, signIn, signOut } from "next-auth/react"
 import { showNotification } from '@mantine/notifications';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router'
@@ -16,7 +16,7 @@ export default function Index() {
                 router.replace("/")
                 setTimeout(() => {
                     showNotification({
-                        autoClose: 5000,
+                        autoClose: 5_000,
                         color: 'teal',
                         title: 'Signed In',
                         message: 'Signed in successfully',
@@ -26,7 +26,7 @@ export default function Index() {
                 router.replace("/")
                 setTimeout(() => {
                     showNotification({
-                        autoClose: 5000,
+                        autoClose: 5_000,
                         color: 'orange',
                         title: 'Signed Out',
                         message: 'Signed out successfully',
@@ -35,16 +35,5 @@ export default function Index() {
             }
         }
     }, [status, options])
-    if (session) {
-        return (
-            <>
-                {/* <AuthenticatedHeader user={session.user} tabs={["Home"]} activeTab="Home" /> */}
-            </>
-        )
-    }
-    return (
-        <>
-            {/* <UnauthenticatedHeader links={[{label: "Home", link: "/"}, {label: "Sign In", link: "/auth/signin"}]} /> */}
-        </>
-    )
+    return (<></>)
 }

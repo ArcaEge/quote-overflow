@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     createStyles,
     Container,
@@ -8,10 +8,10 @@ import {
     Text,
     Menu,
     Divider,
-    Tabs,
+    Header,
     Burger,
 } from '@mantine/core';
-import { useBooleanToggle } from '@mantine/hooks';
+import { NextLink } from '@mantine/next';
 import {
     Logout,
     Heart,
@@ -24,18 +24,21 @@ import {
     ChevronDown,
 } from 'tabler-icons-react';
 import { useSession, signIn, signOut } from "next-auth/react"
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
     header: {
-        paddingTop: theme.spacing.sm,
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-        borderBottom: `1px solid ${theme.colorScheme === 'dark' ? 'transparent' : theme.colors.gray[2]
-            }`,
-        marginBottom: 120,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: '100%',
     },
 
-    mainSection: {
-        paddingBottom: theme.spacing.sm,
+    links: {
+        // [theme.fn.smallerThan('xs')]: {
+        //     display: 'none',
+        // },
     },
 
     userMenu: {
@@ -55,60 +58,67 @@ const useStyles = createStyles((theme) => ({
         },
     },
 
-    burger: {
-        // [theme.fn.largerThan('xs')]: {
-        //     display: 'none',
-        // },
-    },
-
     userActive: {
         backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
     },
 
-    tabs: {
-        // [theme.fn.smallerThan('sm')]: {
-        //     display: 'none',
-        // },
-    },
-
-    tabsList: {
-        borderBottom: '0 !important',
-    },
-
-    tabControl: {
+    link: {
+        display: 'block',
+        lineHeight: 1,
+        padding: '8px 12px',
+        borderRadius: theme.radius.sm,
+        textDecoration: 'none',
+        color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
+        fontSize: theme.fontSizes.sm,
         fontWeight: 500,
-        height: 38,
 
         '&:hover': {
-            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1],
+            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
         },
     },
 
-    tabControlActive: {
-        borderColor: `${theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[2]
-            } !important`,
+    linkActive: {
+        '&, &:hover': {
+            backgroundColor:
+                theme.colorScheme === 'dark'
+                    ? theme.fn.rgba(theme.colors[theme.primaryColor][9], 0.25)
+                    : theme.colors[theme.primaryColor][0],
+            color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 3 : 7],
+        },
     },
 }));
 
-export default function AuthenticatedHeader({ user, tabs, activeTab }) {
+export default function AuthenticatedHeader({ user, links }) {
     const { classes, theme, cx } = useStyles();
-    const [opened, toggleOpened] = useBooleanToggle(false);
     const [userMenuOpened, setUserMenuOpened] = useState(false);
 
-    const items = tabs.map((tab) => <Tabs.Tab label={tab} key={tab} />);
+    const [active, setActive] = useState(links[0].link);
+    const router = useRouter();
+
+    useEffect(() => {
+        for (const link of links) {
+            if (router.pathname === link.link) {
+                setActive(link.link);
+            }
+        }
+    }, [router.pathname]);
+
+    const items = links.map((link) => (
+        <Link href={link.link} key={link.link}>
+            <a className={cx(classes.link, { [classes.linkActive]: active === link.link })}>
+                {link.label}
+            </a>
+        </Link>
+    ));
 
     return (
-        <div className={classes.header}>
-            <Container className={classes.mainSection}>
-                <Group position="apart">
-                    <div></div>
-
-                    {/* <Burger
-                        opened={opened}
-                        onClick={() => toggleOpened()}
-                        className={classes.burger}
-                        size="sm"
-                    /> */}
+        <Header height={60}>
+            <Container className={classes.header}>
+                <Group></Group>
+                <Group>
+                    {/* <Group spacing={5} className={classes.links}>
+                        {items}
+                    </Group> */}
 
                     <Menu
                         size={260}
@@ -130,25 +140,17 @@ export default function AuthenticatedHeader({ user, tabs, activeTab }) {
                                 </Group>
                             </UnstyledButton>
                         }>
-                        <Menu.Label>{user.email}</Menu.Label>
+                        {links.map((item, index) => (
+                            <Menu.Item component={NextLink} href={item.link}>
+                                {item.label}
+                            </Menu.Item>
+                        ))}
+                        <Divider />
+                        {/* <Menu.Label>{user.email}</Menu.Label> */}
                         <Menu.Item icon={<Logout size={14} />} onClick={() => signOut()}>Logout</Menu.Item>
                     </Menu>
                 </Group>
             </Container>
-            <Container>
-                <Tabs
-                    variant="outline"
-                    classNames={{
-                        root: classes.tabs,
-                        tabsListWrapper: classes.tabsList,
-                        tabControl: classes.tabControl,
-                        tabActive: classes.tabControlActive,
-                    }}
-                    active={activeTab} // eslint-disable-line
-                >
-                    {items}
-                </Tabs>
-            </Container>
-        </div>
+        </Header>
     );
 }

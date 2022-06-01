@@ -34,6 +34,18 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Design {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  starred     Boolean  @default(false)
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  contents    Json
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -42,6 +54,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  designs       Design[]
 }
 
 model VerificationToken {

@@ -77,7 +77,7 @@ export default function UnauthenticatedHeader({ links }: HeaderSimpleProps) {
     ));
 
     return (
-        <Header height={60} mb={10}>
+        <Header height={60}>
             <Container className={classes.header}>
                 <div></div>
                 <Group spacing={5} className={classes.links}>

@@ -6,12 +6,13 @@ import UnauthenticatedHeader from 'components/navbar_unauthenticated'
 export default function Navbar() {
     const { data: session, status } = useSession()
 
-    if (session) {
+    if (status == "authenticated") {
         return (
-            <AuthenticatedHeader user={session.user} tabs={["Home"]} activeTab="Home" />
+            <AuthenticatedHeader user={session.user} links={[{ label: "Home", link: "/" }, { label: "Dashboard", link: "/dashboard" },]} />
+        )
+    } else {
+        return (
+            <UnauthenticatedHeader links={[{ label: "Home", link: "/" }, { label: "Sign In", link: "/auth/signin" }]} />
         )
     }
-    return (
-        <UnauthenticatedHeader links={[{ label: "Home", link: "/" }, { label: "Sign In", link: "/auth/signin" }]} />
-    )
 }

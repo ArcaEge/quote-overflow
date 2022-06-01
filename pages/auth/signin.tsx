@@ -19,17 +19,20 @@ import Link from 'next/link'
 
 export default function SignIn({ props }) {
   const router = useRouter()
+  const { query } = useRouter()
   const { data: session, status } = useSession()
   const [windowSize, setWindowSize] = useState({
     width: undefined,
     height: undefined,
   });
+  // let redirect = query.redirect != undefined ? {callbackUrl: query.redirect} : {}
+  
   
   if (status === "authenticated") {
     router.push("/")
     setTimeout(() => {
       showNotification({
-        autoClose: 10000,
+        autoClose: 10_000,
         color: 'orange',
         title: 'Already signed in',
         message: 'Sign out first to switch accounts',
@@ -53,7 +56,7 @@ export default function SignIn({ props }) {
         setTimeout(() => {
           showNotification({
             color: 'red',
-            autoClose: 10000,
+            autoClose: 10_000,
             title: 'Email linked to another provider',
             message: 'Your email address is linked to another OAuth provider. Please sign in using that provider.',
           })
