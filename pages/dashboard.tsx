@@ -1,13 +1,16 @@
-import { useSession } from "next-auth/react"
+import { useSession, getSession } from "next-auth/react"
 import { showNotification } from "@mantine/notifications"
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Container, Title, createStyles, Center, Group, Button, TextInput, Tooltip, Text, Card, Grid, ActionIcon, Tabs } from '@mantine/core'
 import { getRandomInt } from "functions/random"
 import { useModals } from '@mantine/modals';
-import { InfoCircle, ArrowUpRight, Star } from "tabler-icons-react"
+import { InfoCircle, ArrowUpRight, Star, StarOff } from "tabler-icons-react"
 import { StarIcon, StarFillIcon } from "@primer/octicons-react"
 import NewDesignModal from "components/designs/new_design_modal"
+import { getDesigns } from "functions/designs"
+import { PrismaClient, Prisma } from '@prisma/client'
+import ReactTimeAgo from 'react-time-ago'
 
 const useStyles = createStyles((theme) => ({
     headerWrap: {
@@ -103,7 +106,7 @@ export default function Page({ designs }) {
                                                     <Card.Section className={classes.footer}>
                                                         <Group position="apart">
                                                             <Text size="xs" color="dimmed">
-                                                                Last updated: {design.lastUpdated}
+                                                                Last updated: <ReactTimeAgo date={new Date(design.updatedAt)} locale="en-US" timeStyle="round-minute"/>
                                                             </Text>
                                                             <Group spacing={0}>
                                                                 <ActionIcon>
@@ -123,40 +126,50 @@ export default function Page({ designs }) {
                                 </Tabs.Tab>
                                 <Tabs.Tab label="Starred">
                                     <Grid>
-                                        {designs.filter((design) => design.starred).map(design => (
-                                            <Grid.Col span={4}>
-                                                <Card p="xl">
-                                                    <Text weight={500} size="lg">
-                                                        {design.name}
-                                                    </Text>
-                                                    <Text size="sm">
-                                                        {design.description}
-                                                    </Text>
-                                                    <Card.Section className={classes.footer}>
-                                                        <Group position="apart">
-                                                            <Text size="xs" color="dimmed">
-                                                                Last updated: {design.lastUpdated}
-                                                            </Text>
-                                                            <Group spacing={0}>
-                                                                <ActionIcon>
-                                                                    {design.starred ?
-                                                                        <StarFillIcon size={16} fill={theme.colors.yellow[6]} />
-                                                                        :
-                                                                        <StarIcon size={16} fill={theme.colors.yellow[6]} />
-                                                                    }
-                                                                </ActionIcon>
+                                        {designs.filter((design) => design.starred).length > 0 ?
+                                            designs.filter((design) => design.starred).map((design, index: Number) => (
+                                                <Grid.Col span={4} key={index.toString()}>
+                                                    <Card p="xl">
+                                                        <Text weight={500} size="lg">
+                                                            {design.name}
+                                                        </Text>
+                                                        <Text size="sm">
+                                                            {design.description}
+                                                        </Text>
+                                                        <Card.Section className={classes.footer}>
+                                                            <Group position="apart">
+                                                                <Text size="xs" color="dimmed">
+                                                                    Last updated: <ReactTimeAgo date={new Date(design.updatedAt)} locale="en-US" timeStyle="round-minute"/>
+                                                                </Text>
+                                                                <Group spacing={0}>
+                                                                    <ActionIcon>
+                                                                        {design.starred ?
+                                                                            <StarFillIcon size={16} fill={theme.colors.yellow[6]} />
+                                                                            :
+                                                                            <StarIcon size={16} fill={theme.colors.yellow[6]} />
+                                                                        }
+                                                                    </ActionIcon>
+                                                                </Group>
                                                             </Group>
-                                                        </Group>
-                                                    </Card.Section>
-                                                </Card>
-                                            </Grid.Col>
-                                        ))}
+                                                        </Card.Section>
+                                                    </Card>
+                                                </Grid.Col>
+                                            ))
+                                            :
+                                            <Center style={{ minHeight: "20vh", width: "100%" }}>
+                                                <Text style={{ textAlign: "center" }} color="dimmed">
+                                                    <StarOff />
+                                                    <br />
+                                                    You have no starred designs
+                                                </Text>
+                                            </Center>
+                                        }
                                     </Grid>
                                 </Tabs.Tab>
                             </Tabs>
                             :
-                            <Center style={{ minHeight: "40vh" }}>
-                                <Text>No designs yet 👀
+                            <Center style={{ minHeight: "30vh" }}>
+                                <Text color="dimmed">No designs yet 👀
                                     <br />
                                     Click "New Design" to create one <ArrowUpRight />
                                 </Text>
@@ -168,32 +181,15 @@ export default function Page({ designs }) {
     }
 }
 
-export function getServerSideProps(context) {
+export async function getServerSideProps(context) {
+    const prisma = new PrismaClient()
+    const session = await getSession(context)
+
+    const designs = await getDesigns(session, prisma)
+
     return {
         props: {
-            designs: [
-                {
-                    name: "Design 1",
-                    id: "1",
-                    description: "This is a description of design 1",
-                    starred: true,
-                    lastUpdated: "2020-01-01",
-                },
-                {
-                    name: "Design 2",
-                    id: "2",
-                    description: "This is a description of design 2",
-                    starred: false,
-                    lastUpdated: "2020-01-02",
-                },
-                {
-                    name: "Design 3",
-                    id: "3",
-                    description: "This is a description of design 3",
-                    starred: true,
-                    lastUpdated: "2020-01-03",
-                }
-            ],
+            designs: designs
         },
     }
 }

@@ -26,8 +26,12 @@ export default NextAuth({
     // newUser: '/auth/new-user'
   },
   callbacks: {
-    async redirect({ url, baseUrl }) {
+    redirect: async ({ url, baseUrl }) => {
       return baseUrl + '?options=auth'
-    }
+    },
+    session: async ({ session, user, token }) => {
+      session.user["id"] = user.id;
+      return Promise.resolve(session);
+    },
   },
 })

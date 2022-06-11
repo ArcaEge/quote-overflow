@@ -7,6 +7,10 @@ import React, { useEffect } from 'react';
 import NextNProgress from "nextjs-progressbar";
 import NProgress from 'nprogress'
 import MainHandler from 'components/main_handler';
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en.json'
+
+TimeAgo.addDefaultLocale(en)
 
 function App({ Component, pageProps: { session, ...pageProps }, }) {
   NProgress.configure({ showSpinner: false })

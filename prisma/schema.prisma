@@ -38,8 +38,8 @@ model Design {
   id          String   @id @default(cuid())
   userId      String
   name        String
-  starred     Boolean  @default(false)
   description String
+  starred     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
   contents    Json
