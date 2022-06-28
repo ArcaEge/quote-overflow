@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createStyles, Header, Container, Group, Burger } from '@mantine/core';
+import { createStyles, Header, Container, Group, Burger, Anchor, Text } from '@mantine/core';
 import { useBooleanToggle } from '@mantine/hooks';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -57,7 +57,7 @@ interface HeaderSimpleProps {
 export default function UnauthenticatedHeader({ links }: HeaderSimpleProps) {
     // const [opened, toggleOpened] = useBooleanToggle(false);
     const [active, setActive] = useState(links[0].link);
-    const { classes, cx } = useStyles();
+    const { classes, theme, cx } = useStyles();
     const router = useRouter();
 
     useEffect(() => {
@@ -79,7 +79,30 @@ export default function UnauthenticatedHeader({ links }: HeaderSimpleProps) {
     return (
         <Header height={60}>
             <Container className={classes.header}>
-                <div></div>
+                <div>
+                    <Anchor component={Link} href="/">
+                        <div style={{ cursor: "pointer", userSelect: "none" }}>
+                            <Text
+                                component="span"
+                                align="center"
+                                variant="gradient"
+                                size="xl"
+                                weight={900}
+                                style={{ fontFamily: 'Greycliff CF, sans-serif' }}
+                            >
+                                Quote </Text>
+                            <Text
+                                component="span"
+                                align="center"
+                                size="xl"
+                                weight={700}
+                                style={{ fontFamily: 'Greycliff CF, sans-serif' }}
+                                color={theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.dark[4]}
+                            >
+                                Overflow</Text>
+                        </div>
+                    </Anchor>
+                </div>
                 <Group spacing={5} className={classes.links}>
                     {items}
                 </Group>

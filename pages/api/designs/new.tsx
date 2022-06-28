@@ -6,11 +6,11 @@ const prisma = new PrismaClient()
 
 export default async function handler(req, res) {
     const session = await getSession({ req })
-
+    // Handle errors that may cause a 500 response and check user and CSRF tokens for security
     if (req.method != 'POST') {
         res.status(405).json({ code: 405, response: 'error', message: "Method not allowed" })
         return
-    } else if (req.cookies["next-auth.csrf-token"] != decodeURIComponent(req.headers["x-csrf-token"])) {
+    } else if (req.cookies["next-auth.csrf-token"].split('|', 1)[0] != decodeURIComponent(req.headers["x-csrf-token"])) {
         res.status(403).json({ code: 403, response: 'error', message: "CSRF token mismatch" })
         return
     } else if (!session) {
@@ -34,5 +34,6 @@ export default async function handler(req, res) {
     })
 
     res.status(200).json({ code: 200, response: 'success', message: "Design created", 
-    design: Object.fromEntries(allowed.map(k => k == "createdAt" || k == "updatedAt" ? [k, design[k].getTime()] : [k, design[k]])) })
+    // Remove unnecessary/private fields from response and convert time fields to UTC timestamp
+    design: Object.fromEntries(allowed.map(k => k == "createdAt" || k == "updatedAt" ? [k, design[k].getTime()] : [k, design[k]])) }) 
 }

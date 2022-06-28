@@ -182,6 +182,7 @@ export default function Page({ designs }) {
 }
 
 export async function getServerSideProps(context) {
+    // Fetch designs from the database
     const prisma = new PrismaClient()
     const session = await getSession(context)
 

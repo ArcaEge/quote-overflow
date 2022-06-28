@@ -9,7 +9,7 @@ import {
     Menu,
     Divider,
     Header,
-    Burger,
+    Anchor,
 } from '@mantine/core';
 import { NextLink } from '@mantine/next';
 import {
@@ -114,7 +114,30 @@ export default function AuthenticatedHeader({ user, links }) {
     return (
         <Header height={60}>
             <Container className={classes.header}>
-                <Group></Group>
+                <Group>
+                    <Anchor component={Link} href="/">
+                        <div style={{ cursor: "pointer", userSelect: "none" }}>
+                            <Text
+                                component="span"
+                                align="center"
+                                variant="gradient"
+                                size="xl"
+                                weight={900}
+                                style={{ fontFamily: 'Greycliff CF, sans-serif' }}
+                            >
+                                Quote </Text>
+                            <Text
+                                component="span"
+                                align="center"
+                                size="xl"
+                                weight={700}
+                                style={{ fontFamily: 'Greycliff CF, sans-serif' }}
+                                color={theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.dark[4]}
+                            >
+                                Overflow</Text>
+                        </div>
+                    </Anchor>
+                </Group>
                 <Group>
                     {/* <Group spacing={5} className={classes.links}>
                         {items}

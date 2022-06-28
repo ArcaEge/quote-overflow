@@ -30,6 +30,7 @@ export default NextAuth({
       return baseUrl + '?options=auth'
     },
     session: async ({ session, user, token }) => {
+      // Add user ID to session object
       session.user["id"] = user.id;
       return Promise.resolve(session);
     },
