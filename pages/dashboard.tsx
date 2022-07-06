@@ -11,6 +11,8 @@ import NewDesignModal from "components/designs/new_design_modal"
 import { getDesigns } from "functions/designs"
 import { PrismaClient, Prisma } from '@prisma/client'
 import ReactTimeAgo from 'react-time-ago'
+import Link from "next/link"
+import Image from 'next/image'
 
 const useStyles = createStyles((theme) => ({
     headerWrap: {
@@ -23,12 +25,12 @@ const useStyles = createStyles((theme) => ({
     },
     headerBg: {
         opacity: 0.6,
-        position: "absolute",
-        left: 0,
-        top: "50%",
+        // position: "absolute",
+        // left: 0,
+        // top: 0,
         width: "100%",
-        height: "auto",
-        transform: "translate(0, -50%)",
+        height: "100%",
+        // transform: "translate(0, -50%)",
     },
     header: {
         position: "relative",
@@ -77,7 +79,7 @@ export default function Page({ designs }) {
         return (
             <>
                 <div className={classes.headerWrap}>
-                    <img className={classes.headerBg} src={headerImage} />
+                    <Image src={headerImage} alt="" className={classes.headerBg} layout='fill' objectFit='cover' />
                     <Center style={{ height: "100%" }}>
                         <Container py="xl" mt={0} className={classes.header}>
                             <Title order={1} style={theme.colorScheme === "dark" ? { color: theme.colors.gray[2] } : null}>Welcome to Quote Overflow</Title>
@@ -95,41 +97,9 @@ export default function Page({ designs }) {
                                 <Tabs.Tab label="All">
                                     <Grid>
                                         {designs.map(design => (
-                                            <Grid.Col span={4}>
-                                                <Card p="xl">
-                                                    <Text weight={500} size="lg">
-                                                        {design.name}
-                                                    </Text>
-                                                    <Text size="sm">
-                                                        {design.description}
-                                                    </Text>
-                                                    <Card.Section className={classes.footer}>
-                                                        <Group position="apart">
-                                                            <Text size="xs" color="dimmed">
-                                                                Last updated: <ReactTimeAgo date={new Date(design.updatedAt)} locale="en-US" timeStyle="round-minute"/>
-                                                            </Text>
-                                                            <Group spacing={0}>
-                                                                <ActionIcon>
-                                                                    {design.starred ?
-                                                                        <StarFillIcon size={16} fill={theme.colors.yellow[6]} />
-                                                                        :
-                                                                        <StarIcon size={16} fill={theme.colors.yellow[6]} />
-                                                                    }
-                                                                </ActionIcon>
-                                                            </Group>
-                                                        </Group>
-                                                    </Card.Section>
-                                                </Card>
-                                            </Grid.Col>
-                                        ))}
-                                    </Grid>
-                                </Tabs.Tab>
-                                <Tabs.Tab label="Starred">
-                                    <Grid>
-                                        {designs.filter((design) => design.starred).length > 0 ?
-                                            designs.filter((design) => design.starred).map((design, index: Number) => (
-                                                <Grid.Col span={4} key={index.toString()}>
-                                                    <Card p="xl">
+                                            <Grid.Col span={4} key={design.id}>
+                                                <Link href={"/dashboard/" + design.id} passHref>
+                                                    <Card p="xl" component="a">
                                                         <Text weight={500} size="lg">
                                                             {design.name}
                                                         </Text>
@@ -139,7 +109,7 @@ export default function Page({ designs }) {
                                                         <Card.Section className={classes.footer}>
                                                             <Group position="apart">
                                                                 <Text size="xs" color="dimmed">
-                                                                    Last updated: <ReactTimeAgo date={new Date(design.updatedAt)} locale="en-US" timeStyle="round-minute"/>
+                                                                    Last updated: <ReactTimeAgo date={new Date(design.updatedAt)} locale="en-US" timeStyle="round-minute" />
                                                                 </Text>
                                                                 <Group spacing={0}>
                                                                     <ActionIcon>
@@ -153,6 +123,42 @@ export default function Page({ designs }) {
                                                             </Group>
                                                         </Card.Section>
                                                     </Card>
+                                                </Link>
+                                            </Grid.Col>
+                                        ))}
+                                    </Grid>
+                                </Tabs.Tab>
+                                <Tabs.Tab label="Starred">
+                                    <Grid>
+                                        {designs.filter((design) => design.starred).length > 0 ?
+                                            designs.filter((design) => design.starred).map((design) => (
+                                                <Grid.Col span={4} key={design.id}>
+                                                    <Link href={"/dashboard/" + design.id} passHref>
+                                                        <Card p="xl" component="a">
+                                                            <Text weight={500} size="lg">
+                                                                {design.name}
+                                                            </Text>
+                                                            <Text size="sm">
+                                                                {design.description}
+                                                            </Text>
+                                                            <Card.Section className={classes.footer}>
+                                                                <Group position="apart">
+                                                                    <Text size="xs" color="dimmed">
+                                                                        Last updated: <ReactTimeAgo date={new Date(design.updatedAt)} locale="en-US" timeStyle="round-minute" />
+                                                                    </Text>
+                                                                    <Group spacing={0}>
+                                                                        <ActionIcon>
+                                                                            {design.starred ?
+                                                                                <StarFillIcon size={16} fill={theme.colors.yellow[6]} />
+                                                                                :
+                                                                                <StarIcon size={16} fill={theme.colors.yellow[6]} />
+                                                                            }
+                                                                        </ActionIcon>
+                                                                    </Group>
+                                                                </Group>
+                                                            </Card.Section>
+                                                        </Card>
+                                                    </Link>
                                                 </Grid.Col>
                                             ))
                                             :
@@ -171,7 +177,7 @@ export default function Page({ designs }) {
                             <Center style={{ minHeight: "30vh" }}>
                                 <Text color="dimmed">No designs yet 👀
                                     <br />
-                                    Click "New Design" to create one <ArrowUpRight />
+                                    Click &quot;New Design&quot; to create one <ArrowUpRight />
                                 </Text>
                             </Center>
                     }

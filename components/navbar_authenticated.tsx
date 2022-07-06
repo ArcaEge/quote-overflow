@@ -144,7 +144,7 @@ export default function AuthenticatedHeader({ user, links }) {
                     </Group> */}
 
                     <Menu
-                        size={260}
+                        size="md"
                         placement="end"
                         transition="pop-top-right"
                         className={classes.userMenu}
@@ -163,8 +163,8 @@ export default function AuthenticatedHeader({ user, links }) {
                                 </Group>
                             </UnstyledButton>
                         }>
-                        {links.map((item, index) => (
-                            <Menu.Item component={NextLink} href={item.link}>
+                        {links.map((item, index: Number) => (
+                            <Menu.Item component={NextLink} href={item.link} key={index.toString()}>
                                 {item.label}
                             </Menu.Item>
                         ))}

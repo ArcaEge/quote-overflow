@@ -139,7 +139,7 @@ export default function NotFoundImage() {
     return (
         <Container className={classes.root}>
             <SimpleGrid spacing={40} cols={2} breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}>
-                <Image className={classes.mobileImage} src='/images/cat.gif' radius="md" style={{ opacity: "0.6" }} />
+                <Image className={classes.mobileImage} src='/images/dog.gif' radius="md" style={{ opacity: "0.6" }} alt="Dog GIF (also, it's pronounced gif and not jif)" />
                 <div>
                     <div className={classes.label}>404</div>
                     <Title className={classes.title}>Page not found</Title>
@@ -149,7 +149,7 @@ export default function NotFoundImage() {
                     {data ?
                         <>
                             <Text color="dimmed" size="lg" mt="xs">
-                                But while you're here, here's a random quote:
+                                But while you&apos;re here, here&apos;s a random quote:
                                 <Blockquote cite={data.author} style={{ maxWidth: "800px" }}>
                                     {data.content}
                                 </Blockquote>
@@ -163,7 +163,7 @@ export default function NotFoundImage() {
                         </Button>
                     </Link>
                 </div>
-                <Image src='/images/cat.gif' radius="md" style={{ opacity: "0.8" }} className={classes.desktopImage} />
+                <Image src='/images/dog.gif' radius="md" style={{ opacity: "0.8" }} className={classes.desktopImage} alt="Dog GIF (also, it's pronounced gif and not jif)" />
             </SimpleGrid>
         </Container>
     );

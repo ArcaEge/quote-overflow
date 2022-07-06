@@ -1,9 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import { getSession } from 'next-auth/react'
 import { allowed } from 'functions/designs'
+import DesignNav from 'components/designs/designs_nav/design_nav'
 
 export default function Dashboard({ design }) {
-    console.log(design)
+    return (
+        <DesignNav design={design}/>
+    )
 }
 
 export async function getServerSideProps(context) {
@@ -16,8 +19,6 @@ export async function getServerSideProps(context) {
             userId: session.user['id']
         },
     })
-
-    console.log(context.query.id, session.user['id'])
 
     if (!design) {
         return {
